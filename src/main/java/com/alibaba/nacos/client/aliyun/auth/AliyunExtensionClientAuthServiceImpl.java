@@ -54,7 +54,9 @@ public class AliyunExtensionClientAuthServiceImpl extends AbstractClientAuthServ
     public Boolean login(Properties properties) {
         for (ExtensionCredentialsProvider each : credentialsProviders) {
             if (each.matchProvider(properties)) {
-                LOGGER.info("Match credentials provider: {}", each.getClass().getName());
+                if (null == matchedProvider) {
+                    LOGGER.info("Match credentials provider: {}", each.getClass().getName());
+                }
                 matchedProvider = each;
                 break;
             }
