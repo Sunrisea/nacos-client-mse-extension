@@ -68,13 +68,6 @@ public class RamKmsEncryptor extends KmsEncryptor{
         }
         LOGGER.info("using kms regionId {}.", kmsRegionId);
         
-        if (StringUtils.isBlank(kmsRegionId) && StringUtils.isBlank(regionId)) {
-            String errorMsg = "region is not set up yet";
-            LOGGER.error(AliyunConst.formatHelpMessage(errorMsg));
-            localInitException = new RuntimeException(errorMsg);
-            return null;
-        }
-        
         String ramRoleName= properties.getProperty(PropertyKeyConst.RAM_ROLE_NAME,
                 System.getProperty(PropertyKeyConst.RAM_ROLE_NAME, System.getenv(PropertyKeyConst.RAM_ROLE_NAME)));
         LOGGER.info("using ramRoleName {}.", ramRoleName);
@@ -124,7 +117,13 @@ public class RamKmsEncryptor extends KmsEncryptor{
                 LOGGER.info("using keyId {}.", keyId);
             }
         }else{
-            LOGGER.info("kmsEndpoint is not set up yet, KMS V1.0 module");
+            LOGGER.info("kmsEndpoint is not set up yet, KMS V1.0 mode");
+            if (StringUtils.isBlank(kmsRegionId) && StringUtils.isBlank(regionId)) {
+                String errorMsg = "KMS V1.0 mode, region is not set up yet";
+                LOGGER.error(AliyunConst.formatHelpMessage(errorMsg));
+                localInitException = new RuntimeException(errorMsg);
+                return null;
+            }
             keyId = AliyunConst.KMS_DEFAULT_KEY_ID_VALUE;
             return new Client(config);
         }
@@ -136,7 +135,11 @@ public class RamKmsEncryptor extends KmsEncryptor{
                     System.getProperty(AliyunConst.KMS_CA_FILE_PATH_KEY,
                             System.getenv(AliyunConst.KMS_CA_FILE_PATH_KEY)));
             if(!StringUtils.isBlank(kmsCaFilePath)){
-                kmsCaFileContent = readFileToString(kmsCaFilePath);
+                try{
+                    kmsCaFileContent = readFileToString(kmsCaFilePath);
+                }catch (Exception e){
+                    LOGGER.error("read kms ca file failed.", e);
+                }
             }
         }
         
@@ -144,11 +147,18 @@ public class RamKmsEncryptor extends KmsEncryptor{
             LOGGER.info("using {}: {}.", AliyunConst.KMS_CA_FILE_CONTENT, kmsCaFileContent);
             config.setCa(kmsCaFileContent);
         } else {
-            String ignoreSSL = properties.getProperty(AliyunConst.IGNORE_SSL_KEY,
-                    System.getProperty(AliyunConst.IGNORE_SSL_KEY, System.getenv(AliyunConst.IGNORE_SSL_KEY)));
-            if(!StringUtils.isBlank(ignoreSSL)&&ignoreSSL.equalsIgnoreCase("true")){
-                LOGGER.info("ignoreSSL is set to true.");
+            runtimeOptions.ignoreSSL=true;
+        }
+        
+        String openSSL = properties.getProperty(AliyunConst.OPEN_SSL_KEY,
+                System.getProperty(AliyunConst.OPEN_SSL_KEY, System.getenv(AliyunConst.OPEN_SSL_KEY)));
+        if(!StringUtils.isBlank(openSSL)){
+            if(openSSL.equalsIgnoreCase("false")){
+                LOGGER.info("openSSL is set to false.");
                 runtimeOptions.ignoreSSL = true;
+            } else if (openSSL.equalsIgnoreCase("true")){
+                LOGGER.info("ignoreSSL is set to true.");
+                runtimeOptions.ignoreSSL = false;
             }
         }
         return new Client(config);
