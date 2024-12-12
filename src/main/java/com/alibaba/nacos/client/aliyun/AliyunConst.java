@@ -27,6 +27,32 @@ public class AliyunConst {
     
     public static final String KMS_KEY_SPEC_AES_256 = "AES_256";
     
+    public static final String KMS_ACCESS_KEY = "kmsAccessKey";
+    
+    public static final String KMS_SECRET_KEY = "kmsSecretKey";
+    
+    public static final String KMS_RAM_ROLE_NAME = "kmsRamRoleName";
+    
+    public static final String KMS_STS_AK = "kmsStsAccessKey";
+    
+    public static final String KMS_STS_SECRET_KEY = "kmsStsSecretKey";
+    
+    public static final String KMS_ROLE_ARN = "kmsRoleArn";
+    
+    public static final String KMS_OIDC_PROVIDER_ARN = "kmsOidcProviderArn";
+    
+    public static final String KMS_ROLE_SESSION_NAME = "kmsRoleSessionName";
+    
+    public static final String KMS_OIDC_TOKEN_FILE_PATH = "kmsOidcTokenFilePath";
+    
+    public static final String KMS_SECURITY_TOKEN = "kmsSecurityToken";
+    
+    public static final String KMS_RAM_ROLE_ARN_ACCESS_KEY = "kmsRamRoleArnAccessKey";
+    
+    public static final String KMS_RAM_ROLE_ARN_SECRET_KEY = "kmsRamRoleArnSecretKey";
+    
+    public static final String KMS_CREDENTIALS_URI = "kmsCredentialsUri";
+    
     public static final String ENCODE_UTF8 = StandardCharsets.UTF_8.displayName();
     
     public static final String ENCODE_UTF16 = StandardCharsets.UTF_16.displayName();

@@ -1,7 +1,13 @@
 package com.alibaba.nacos.client.aliyun;
 
-import com.alibaba.nacos.api.PropertyKeyConst;
-import com.alibaba.nacos.api.utils.StringUtils;
+import com.alibaba.nacos.client.aliyun.provider.AccessKeyCredentialsProvider;
+import com.alibaba.nacos.client.aliyun.provider.CredentialsUriKmsCredentialsProvider;
+import com.alibaba.nacos.client.aliyun.provider.EcsRamRoleKmsCredentialsProvider;
+import com.alibaba.nacos.client.aliyun.provider.KmsCredentialsProvider;
+import com.alibaba.nacos.client.aliyun.provider.OidcRoleArnKmsCredentialsProvider;
+import com.alibaba.nacos.client.aliyun.provider.RamRoleArnKmsCredentialsProvider;
+import com.alibaba.nacos.client.aliyun.provider.StsTokenKmsCredentialsProvider;
+import com.alibaba.nacos.common.utils.StringUtils;
 import com.aliyun.kms20160120.Client;
 import com.aliyun.kms20160120.models.DecryptRequest;
 import com.aliyun.kms20160120.models.DescribeKeyRequest;
@@ -41,8 +47,18 @@ public class RamKmsEncryptor extends KmsEncryptor{
     
     private AsyncProcessor asyncProcessor;
     
+    private final Set<KmsCredentialsProvider> credentialsProviders;
+    
     public RamKmsEncryptor(Properties properties){
         super(properties);
+        credentialsProviders = new HashSet<>();
+        credentialsProviders.add(new AccessKeyCredentialsProvider());
+        credentialsProviders.add(new StsTokenKmsCredentialsProvider());
+        credentialsProviders.add(new RamRoleArnKmsCredentialsProvider());
+        credentialsProviders.add(new EcsRamRoleKmsCredentialsProvider());
+        credentialsProviders.add(new OidcRoleArnKmsCredentialsProvider());
+        credentialsProviders.add(new CredentialsUriKmsCredentialsProvider());
+        
         try{
             kmsClient = createClient(properties);
         }catch (Exception e){
@@ -68,17 +84,6 @@ public class RamKmsEncryptor extends KmsEncryptor{
         }
         LOGGER.info("using kms regionId {}.", kmsRegionId);
         
-        String ramRoleName= properties.getProperty(PropertyKeyConst.RAM_ROLE_NAME,
-                System.getProperty(PropertyKeyConst.RAM_ROLE_NAME, System.getenv(PropertyKeyConst.RAM_ROLE_NAME)));
-        LOGGER.info("using ramRoleName {}.", ramRoleName);
-        
-        String accessKey = properties.getProperty(PropertyKeyConst.ACCESS_KEY,
-                System.getProperty(PropertyKeyConst.ACCESS_KEY, System.getenv(PropertyKeyConst.ACCESS_KEY)));
-        LOGGER.info("using accessKey {}.", accessKey);
-        
-        String secretKey = properties.getProperty(PropertyKeyConst.SECRET_KEY,
-                System.getProperty(PropertyKeyConst.SECRET_KEY, System.getenv(PropertyKeyConst.SECRET_KEY)));
-        
         String kmsEndpoint = properties.getProperty(AliyunConst.KMS_ENDPOINT,
                 System.getProperty(AliyunConst.KMS_ENDPOINT, System.getenv(AliyunConst.KMS_ENDPOINT)));
         LOGGER.info("using kmsEndpoint {}.", kmsEndpoint);
@@ -86,25 +91,26 @@ public class RamKmsEncryptor extends KmsEncryptor{
         Config config = new Config();
         runtimeOptions = new RuntimeOptions();
         
-        if(StringUtils.isBlank(ramRoleName)&&(StringUtils.isBlank(accessKey)||StringUtils.isBlank(secretKey))){
-            String msg = "ramRoleName or accessKey/secretKey are not set up yet";
+        boolean ifAuth = false;
+        com.aliyun.credentials.models.Config credentialConfig = new com.aliyun.credentials.models.Config();
+        for (KmsCredentialsProvider each : credentialsProviders) {
+            if (each.matchProvider(properties)) {
+                LOGGER.info("Match Kms credentials provider: {}", each.getClass().getName());
+                credentialConfig = each.generateCredentialsConfig(properties);
+                ifAuth = true;
+                break;
+            }
+        }
+        if(!ifAuth){
+            String msg = "Ram Auth Information are not set up yet";
             LOGGER.error(msg);
             localInitException = new RuntimeException(msg);
             return null;
         }
         
-        if(StringUtils.isBlank(accessKey)||StringUtils.isBlank(secretKey)){
-            com.aliyun.credentials.models.Config credentialConfig = new com.aliyun.credentials.models.Config();
-            credentialConfig.setType("ecs_ram_role");
-            if(!StringUtils.isBlank(ramRoleName)){
-                credentialConfig.setRoleName(ramRoleName);
-            }
-            com.aliyun.credentials.Client credentialClient = new com.aliyun.credentials.Client(credentialConfig);
-            config.setCredential(credentialClient);
-        } else {
-            config.setAccessKeyId(accessKey);
-            config.setAccessKeySecret(secretKey);
-        }
+        com.aliyun.credentials.Client credentialClient = new com.aliyun.credentials.Client(credentialConfig);
+        config.setCredential(credentialClient);
+        
         
         config.setRegionId(kmsRegionId);
         if(!StringUtils.isBlank(kmsEndpoint)){
