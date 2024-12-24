@@ -17,13 +17,13 @@ public class StsTokenKmsCredentialsProvider implements KmsCredentialsProvider{
     
     @Override
     public boolean matchProvider(Properties properties) {
-        stsAccessKey = properties.getProperty(AliyunConst.KMS_STS_AK,
-                System.getProperty(AliyunConst.KMS_STS_AK, System.getenv(AliyunConst.KMS_STS_AK)));
+        stsAccessKey = properties.getProperty(AliyunConst.KMS_EXTENSION_ACCESS_KEY,
+                System.getProperty(AliyunConst.KMS_EXTENSION_ACCESS_KEY, System.getenv(AliyunConst.KMS_EXTENSION_ACCESS_KEY)));
         if(StringUtils.isBlank(stsAccessKey)){
             stsAccessKey = getNacosProperties(properties, ExtensionAuthPropertyKey.ACCESS_KEY_ID);
         }
-        stsSecretKey = properties.getProperty(AliyunConst.KMS_STS_SECRET_KEY,
-                System.getProperty(AliyunConst.KMS_STS_SECRET_KEY, System.getenv(AliyunConst.KMS_STS_SECRET_KEY)));
+        stsSecretKey = properties.getProperty(AliyunConst.KMS_EXTENSION_SECRET_KEY,
+                System.getProperty(AliyunConst.KMS_EXTENSION_SECRET_KEY, System.getenv(AliyunConst.KMS_EXTENSION_SECRET_KEY)));
         if(StringUtils.isBlank(stsSecretKey)){
             stsSecretKey = getNacosProperties(properties, ExtensionAuthPropertyKey.ACCESS_KEY_SECRET);
         }

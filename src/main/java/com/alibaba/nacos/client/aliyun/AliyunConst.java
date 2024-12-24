@@ -33,11 +33,11 @@ public class AliyunConst {
     
     public static final String KMS_RAM_ROLE_NAME = "kmsRamRoleName";
     
-    public static final String KMS_STS_AK = "kmsStsAccessKey";
-    
-    public static final String KMS_STS_SECRET_KEY = "kmsStsSecretKey";
-    
     public static final String KMS_ROLE_ARN = "kmsRoleArn";
+    
+    public static final String KMS_POLICY = "kmsPolicy";
+    
+    public static final String KMS_ROLE_SESSION_EXPIRATION_SECONDS = "kmsRoleSessionExpiration";
     
     public static final String KMS_OIDC_PROVIDER_ARN = "kmsOidcProviderArn";
     
@@ -47,9 +47,9 @@ public class AliyunConst {
     
     public static final String KMS_SECURITY_TOKEN = "kmsSecurityToken";
     
-    public static final String KMS_RAM_ROLE_ARN_ACCESS_KEY = "kmsRamRoleArnAccessKey";
+    public static final String KMS_EXTENSION_ACCESS_KEY = "kmsExtensionAccessKey";
     
-    public static final String KMS_RAM_ROLE_ARN_SECRET_KEY = "kmsRamRoleArnSecretKey";
+    public static final String KMS_EXTENSION_SECRET_KEY = "kmsExtensionSecretKey";
     
     public static final String KMS_CREDENTIALS_URI = "kmsCredentialsUri";
     
