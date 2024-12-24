@@ -55,6 +55,22 @@ public class OidcRoleArnKmsCredentialsProvider implements KmsCredentialsProvider
         credentialsConfig.setRoleSessionName(roleSessionName);
         credentialsConfig.setOidcProviderArn(oidcProviderArn);
         credentialsConfig.setOidcTokenFilePath(oidcTokenFilePath);
+        String policy = properties.getProperty(AliyunConst.KMS_POLICY,
+                System.getProperty(AliyunConst.KMS_POLICY, System.getenv(AliyunConst.KMS_POLICY)));
+        if(StringUtils.isBlank(policy)){
+            policy = getNacosProperties(properties, ExtensionAuthPropertyKey.POLICY);
+        }
+        if(StringUtils.isNotBlank(policy)){
+            credentialsConfig.setPolicy(policy);
+        }
+        String roleSessionExpiration = properties.getProperty(AliyunConst.KMS_ROLE_SESSION_EXPIRATION_SECONDS,
+                System.getProperty(AliyunConst.KMS_ROLE_SESSION_EXPIRATION_SECONDS, System.getenv(AliyunConst.KMS_ROLE_SESSION_EXPIRATION_SECONDS)));
+        if(StringUtils.isBlank(roleSessionExpiration)){
+            roleSessionExpiration = getNacosProperties(properties, ExtensionAuthPropertyKey.ROLE_SESSION_EXPIRATION);
+        }
+        if(StringUtils.isNotBlank(roleSessionExpiration)){
+            credentialsConfig.setRoleSessionExpiration(Integer.parseInt(roleSessionExpiration));
+        }
         return credentialsConfig;
     }
 }
