@@ -2,7 +2,6 @@ package com.alibaba.nacos.client.aliyun.auth.provider;
 
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.exception.runtime.NacosRuntimeException;
-import com.alibaba.nacos.api.model.v2.ErrorCode;
 import com.alibaba.nacos.api.utils.StringUtils;
 import com.alibaba.nacos.client.aliyun.auth.ExtensionAuthPropertyKey;
 import com.alibaba.nacos.client.aliyun.auth.ExtensionRamContext;
@@ -46,7 +45,7 @@ public class AutoRotateCredentialsProvider implements ExtensionCredentialsProvid
                 client = SecretCacheClientBuilder.newClient();
             }
         } catch (Exception e) {
-            throw new NacosRuntimeException(ErrorCode.ILLEGAL_STATE.getCode(), e.getMessage(), e);
+            throw new NacosRuntimeException(23000, e.getMessage(), e);
         }
     }
     
