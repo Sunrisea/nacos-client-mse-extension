@@ -10,6 +10,7 @@ import com.aliyuncs.exceptions.ClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import static com.alibaba.nacos.client.aliyun.AliyunConst.CIPHER_PREFIX;
@@ -90,5 +91,9 @@ public class AliyunConfigFilter extends AbstractConfigFilter {
     @Override
     public String getFilterName() {
         return this.getClass().getName();
+    }
+    
+    public void close() throws IOException {
+        this.kmsEncryptor.close();
     }
 }
