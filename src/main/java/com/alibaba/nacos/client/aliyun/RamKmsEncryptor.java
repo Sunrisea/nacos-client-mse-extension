@@ -22,6 +22,7 @@ import com.aliyuncs.exceptions.ClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -65,10 +66,12 @@ public class RamKmsEncryptor extends KmsEncryptor{
             localInitException = e;
         }
         
-        try {
-            asyncProcessor = new AsyncProcessor();
-        } catch (Exception e) {
-            LOGGER.error("init async processor failed.", e);
+        if(localInitException == null){
+            try {
+                asyncProcessor = new AsyncProcessor();
+            } catch (Exception e) {
+                LOGGER.error("init async processor failed.", e);
+            }
         }
     }
     
@@ -304,6 +307,11 @@ public class RamKmsEncryptor extends KmsEncryptor{
     @Override
     public void checkKeyId() throws Exception {
         throwExceptionIfStringBlankWithErrorKey(keyId, "", "keyId is not set.", KEY_ID);
+    }
+    
+    @Override
+    public void close() throws IOException {
+        asyncProcessor.shutdown();
     }
     
 }

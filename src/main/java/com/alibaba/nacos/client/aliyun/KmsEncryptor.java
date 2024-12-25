@@ -6,6 +6,7 @@ import com.alibaba.nacos.api.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +26,7 @@ import static com.alibaba.nacos.client.aliyun.AliyunConst.ENCRYPTED_DATA_KEY;
 import static com.alibaba.nacos.client.aliyun.AliyunConst.GROUP;
 import static com.alibaba.nacos.client.aliyun.AliyunConst.STRING_VALUE_BLANK_ERROR_MSG_FORMAT;
 
-public abstract class KmsEncryptor {
+public abstract class KmsEncryptor implements Closeable {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(AliyunConfigFilter.class);
     
@@ -334,4 +335,8 @@ public abstract class KmsEncryptor {
             this.encryptedDataKey = encryptedDataKey;
         }
     }
+    
+    @Override
+    public abstract void close() throws IOException;
+
 }
