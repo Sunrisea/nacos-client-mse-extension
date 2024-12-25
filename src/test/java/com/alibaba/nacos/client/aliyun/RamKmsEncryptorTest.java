@@ -124,7 +124,7 @@ class RamKmsEncryptorTest {
         try {
             ramKmsEncryptor1.encrypt(configRequest);
         } catch (Exception e) {
-            assertTrue(e.getMessage().contains("ramRoleName or accessKey/secretKey are not set up yet"));
+            assertTrue(e.getMessage().contains("Ram Auth Information are not set up yet"));
         }
         
         Properties properties2 = new Properties();
