@@ -27,6 +27,32 @@ public class AliyunConst {
     
     public static final String KMS_KEY_SPEC_AES_256 = "AES_256";
     
+    public static final String KMS_ACCESS_KEY = "kmsAccessKey";
+    
+    public static final String KMS_SECRET_KEY = "kmsSecretKey";
+    
+    public static final String KMS_RAM_ROLE_NAME = "kmsRamRoleName";
+    
+    public static final String KMS_ROLE_ARN = "kmsRoleArn";
+    
+    public static final String KMS_POLICY = "kmsPolicy";
+    
+    public static final String KMS_ROLE_SESSION_EXPIRATION_SECONDS = "kmsRoleSessionExpiration";
+    
+    public static final String KMS_OIDC_PROVIDER_ARN = "kmsOidcProviderArn";
+    
+    public static final String KMS_ROLE_SESSION_NAME = "kmsRoleSessionName";
+    
+    public static final String KMS_OIDC_TOKEN_FILE_PATH = "kmsOidcTokenFilePath";
+    
+    public static final String KMS_SECURITY_TOKEN = "kmsSecurityToken";
+    
+    public static final String KMS_EXTENSION_ACCESS_KEY = "kmsExtensionAccessKey";
+    
+    public static final String KMS_EXTENSION_SECRET_KEY = "kmsExtensionSecretKey";
+    
+    public static final String KMS_CREDENTIALS_URI = "kmsCredentialsUri";
+    
     public static final String ENCODE_UTF8 = StandardCharsets.UTF_8.displayName();
     
     public static final String ENCODE_UTF16 = StandardCharsets.UTF_16.displayName();
@@ -52,6 +78,8 @@ public class AliyunConst {
     public static final String KMS_CA_FILE_PATH_KEY = "kmsCaFilePath";
 
     public static final String KMS_CA_FILE_CONTENT = "kmsCaFileContent";
+    
+    public static final String OPEN_SSL_KEY = "openSSL";
 
     public static final String MSE_ENCRYPTED_CONFIG_USAGE_DOCUMENT_URL = "https://help.aliyun.com/zh/mse/user-guide/create-and-use-encrypted-configurations?spm=a2c4g.11186623.0.0.55587becdOW3jf";
     
